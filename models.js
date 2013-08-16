@@ -1,47 +1,48 @@
 ;
 var ModelDef = function () {
     this._modelName = null;
-    this._then = null;
-    this._fail = null;
     this._serviceName = null;
     this._methodName = null;
-    this._columns = [];    
+    this._columns = [];
     this._lastOperation = null;
-    this._operationType = null;
-    this._boundValues = null;
-    this._customValues = null;
 
     this.results = null;
     return this;
-}
+};
 ModelDef.prototype = {
-    initialize: function () {
-        this._fail = defaultFail;
+    clearFields: function (fields) {
+        var i = 0;
+        var control = null;
+        for (; i < fields.length; i++) {
+            control = $("*[model-name = '" + this._modelName + "']*[model-column = '" + fields[i] + "']");
+            $(control[0]).val('');
+        }
         return this;
+    },
+    columnElementId: function (columnName) {
+        var control = null;
+        if (jQuery.inArray(columnName, this._columns) !== -1) {
+            control = $("*[model-name = '" + this._modelName + "']*[model-column = '" + columnName + "']");
+        }
+        if (control === null || control === undefined) {
+            return control;
+        }
+        else {
+            return control[0].id;
+        }
     },
     lastOperation: function () {
         return this._lastOperation;
-    },
-    operation: function (operationType, boundValues, customValues) {
-        debugger;
-        this._operationType = operationType;
-        this._boundValues = boundValues;
-        this._customValues = customValues;
-
-        return this;
     },
     modelName: function (name) {
         this._modelName = name;
         return this;
     },
-    then: function (t) {
+    operation: function (operationType, boundValues, customValues) {
         var colParams = [];
         var i = 0;
         var attribControl = null;
         var params = null;
-        var operationType = this._operationType;
-        var boundValues = this._boundValues;
-        var customValues = this._customValues;
         var setResults = this.setResults;
 
         //set the last operation value
@@ -59,28 +60,15 @@ ModelDef.prototype = {
             attribControl = $("*[model-name = '" + this._modelName + "']*[model-column = '" + boundValues[i] + "']");
             colParams.push({ ColName: boundValues[i], ColValue: $(attribControl[0]).val() });
         }
-        
+
+        //get the custom values passed
         for (i = 0; i < customValues.length; i++) {
             colParams.push({ ColName: customValues[i].col, ColValue: customValues[i].val });
         }
 
         params = "{'operationType':'" + operationType + "','values':'" + JSON.stringify(colParams) + "'}";
-        var myService = new Service(this._serviceName, this._methodName, params,
-         function (r) {
-             t(r.d);
-         }, this._fail);
-        myService.callService();
-
-        //set them to null because we are done using them
-        this._operationType = null;
-        this._boundValues = null;
-        this._customValues = null;
-
-        return this;
-    },
-    fail: function (f) {
-        this._fail = f;
-        return this;
+        var myService = new Service(this._serviceName, this._methodName, params);
+        return myService.callService();
     },
     serviceName: function (name) {
         this._serviceName = name;
@@ -96,29 +84,35 @@ ModelDef.prototype = {
     }
 };
 
-function defaultFail() {
-    //Default Fail
-    console.log("Web Service Call Failed");
+var Promise = function () {
+    this.resolved = null;
+    this.rejected = null;
 };
+Promise.prototype = {
+    then: function (onResolved, onRejected) {
+        this.resolved = onResolved;
+        this.rejected = onRejected;
+    }
+}
 
-var Service = function (serviceName, methodName, methodParams, then, fail) {
+var Service = function (serviceName, methodName, methodParams) {
     this._serviceName = serviceName;
     this._methodName = methodName;
     this._methodParams = methodParams;
-    this._then = then;
-    this._fail = fail;
     return this;
 };
 Service.prototype = {
     callService: function () {
-        $.ajax({
+        var promise = new Promise();
+        return $.ajax({
             type: "POST",
             url: "/" + this._serviceName + ".asmx/" + this._methodName,
             data: this._methodParams,
             contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: this._then,
-            error: this._fail
+            dataType: "json"//,
+//            success: function (result) { promise.resolved(result.d); }, //still deciding to use jQuery promise or create my own
+//            error: function (e) { promise.rejected(e); }
         });
+        //return promise;
     }
 }
