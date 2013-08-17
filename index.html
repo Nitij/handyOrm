@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>HandyOrm by Nitij</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>HandyOrm</h1>
+        <p>A small javascript object library to provide easy binding between the view model and the data source.</p>
+
+        <p class="view"><a href="https://github.com/Nitij/handyOrm">View the Project on GitHub <small>Nitij/handyOrm</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Nitij/handyOrm/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Nitij/handyOrm/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Nitij/handyOrm">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>I have been working on some enterprise web applications for some time which happen to be very responsive and asynchronous in nature. While working on them I was always annoyed when I had to write so much boilerplate code for making asynchronous calls and passing data to the server. Although this process is already abstracted by using jQuery or some other in-house or third party libraries, still I felt something is missing. So this object library is my attempt and effort to make our lives further simpler. So I began working on this some time back(it has been week now at the time this page was initially written).</p>
+
+<p>This object library is still in initial phase and I will be providing all the updates here.</p>
+
+<p>Check out some ways in which this can be used:</p>
+
+<h3>
+<a name="initialize-the-model-and-chain-methods-in-any-sequence" class="anchor" href="#initialize-the-model-and-chain-methods-in-any-sequence"><span class="octicon octicon-link"></span></a>Initialize the model and chain methods in any sequence:</h3>
+
+<pre><code>var myModel = null;
+myModel = new ModelDef()
+              .modelName("MyModel")
+              .serviceName("DataService")
+              .methodName("ExecuteModelOperation")
+              .columns(["id", "name", "phone", "address"]);
+</code></pre>
+
+<p>or call them individually according to your requirement:</p>
+
+<pre><code>myModel.serviceName("DataService");
+myModel.columns(["id", "name", "phone", "address"]);
+</code></pre>
+
+<h3>
+<a name="bind-input-dom-elements-to-the-columns-of-our-model" class="anchor" href="#bind-input-dom-elements-to-the-columns-of-our-model"><span class="octicon octicon-link"></span></a>Bind input DOM elements to the columns of our model:</h3>
+
+<pre><code>&lt;input ... model-name = "MyModel" model-column = "id" disabled = "true"/&gt; &lt;br /&gt;
+&lt;input ... model-name = "MyModel" model-column = "name"/&gt; &lt;br /&gt;
+&lt;input ... model-name = "MyModel" model-column = "phone"/&gt; &lt;br /&gt;
+</code></pre>
+
+<h3>
+<a name="when-its-time-to-make-the-asynchronous-call-to-the-server-you-just-need-a-single-line" class="anchor" href="#when-its-time-to-make-the-asynchronous-call-to-the-server-you-just-need-a-single-line"><span class="octicon octicon-link"></span></a>When its time to make the asynchronous call to the server, you just need a single line:</h3>
+
+<pre><code>myModel.operation("Insert", ["name", "phone", "address"], null).then(ReadRecords, handleError);
+...
+myModel.operation("Update", ["id", "name", "phone", "address"], null).then(ReadRecords, handleError);
+...
+myModel.operation("Delete", null, [{ col: "id", val: id}]).then(ReadRecords, handleError);
+</code></pre>
+
+<h3>
+<a name="here-is-the-summary-of-all-the-available-functions" class="anchor" href="#here-is-the-summary-of-all-the-available-functions"><span class="octicon octicon-link"></span></a>Here is the summary of all the available functions:</h3>
+
+<hr><p><strong>columnElementId(columnName):</strong> Returns the id of the bound column passed.</p>
+
+<p><em>columnName</em>: Name of the column, typeof String.</p>
+
+<hr><p><strong>lastOperation():</strong> Returns the name of the last operation executed.</p>
+
+<hr><p>modelName(name): Sets the model name.</p>
+
+<p><em>name</em>: Name of the model.</p>
+
+<hr><p><strong>operation(operationType, boundValues, customValues):</strong> Executes a single operation.</p>
+
+<p><em>operationType</em>: Type of operation, usually a String.</p>
+
+<p><em>boundValues</em>: Values to use which are in the DOM elements bound to the columns, in the form of [col1, col2, ...]:col1, col2 = typeof String.</p>
+
+<p><em>customValues</em>: Custom values for columns, in the form of [{col:columnName, val:value}, ...].</p>
+
+<hr><p><strong>serviceName(name):</strong> Sets the web service name to use.</p>
+
+<p><em>name</em>: Name of the web service.</p>
+
+<hr><p><strong>methodName(name):</strong> Sets the name of the web service method to call.</p>
+
+<p><em>name</em>: Name of the web service method.</p>
+
+<hr><p><strong>clearFields(fields):</strong> Clear the bound fields for those column names passed as a parameter.</p>
+
+<p><em>fields</em>: Name of bound columns to be cleared in the form of [col1, col2, ...]:col1, col2 = typeof String.</p>
+
+<hr><p>You can refer to the sample application code on github <a href="https://github.com/Nitij/handyOrmSampleApplication">here</a>.</p>
+
+<h3>
+<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>My website is still on the way so right now the only means to contact me is at <a href="mailto:nitij.jp@gmail.com">nitij.jp@gmail.com</a> and I'll definitely reply whenever I get free from feeding my dinosaurs.</p>
+
+<p>Also each and everyone of you is most welcome to provide any suggestion/bug finding for the code.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Nitij">Nitij</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
