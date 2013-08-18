@@ -1,6 +1,33 @@
-;var ModelDef = null;
+; var ModelDef = null;
+var HandyHelper = null;
 
 (function () {
+
+    //Object containing helper methods
+    var Helper = {
+        //We need to escape and un-escape strings in many cases so as to avoid the corruption of the
+        //json that we are passing. This can also be used in many places in the web pages, for ex: sometimes
+        //we need to call functions from onclick attributes then escaping and un-escaping is better
+        //than tweaking the string concatenations.
+        //http://stackoverflow.com/questions/1219860/html-encoding-in-javascript-jquery
+        htmlEscape : function(str){
+            return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        },
+        htmlUnescape: function(value){
+            return String(value)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        }      
+    };
+
     //This is the model definition that will be used to create objects
     //for different models. We have to provide model name, web service name,
     // web service method name, and columns as parameters. Note that this
@@ -73,12 +100,12 @@
             //lets get the values of columns which are bound to the fields
             for (; i < boundValues.length; i++) {
                 attribControl = $("*[model-name = '" + this._modelName + "']*[model-column = '" + boundValues[i] + "']");
-                colParams.push({ ColName: boundValues[i], ColValue: $(attribControl[0]).val() });
+                colParams.push({ ColName: boundValues[i], ColValue: Helper.htmlEscape($(attribControl[0]).val()) });
             }
 
             //get the custom values passed
             for (i = 0; i < customValues.length; i++) {
-                colParams.push({ ColName: customValues[i].col, ColValue: customValues[i].val });
+                colParams.push({ ColName: customValues[i].col, ColValue: Helper.htmlEscape(customValues[i].val) });
             }
 
             params = "{'operationType':'" + operationType + "','values':'" + JSON.stringify(colParams) + "'}";
@@ -131,8 +158,9 @@
             });
             //return promise;
         }
-    }
+    }    
 
-    //lets set our ModelDef object from this closed scope
+    //lets set our ModelDef and helper objects from this closed scope
     ModelDef = modelDef;
+    HandyHelper = Helper;
 })();
