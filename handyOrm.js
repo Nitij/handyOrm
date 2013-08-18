@@ -136,7 +136,7 @@ var HandyHelper = null;
             this.resolved = onResolved;
             this.rejected = onRejected;
         }
-    }
+    };
 
     var Service = function (serviceName, methodName, methodParams) {
         this._serviceName = serviceName;
@@ -158,7 +158,7 @@ var HandyHelper = null;
             });
             //return promise;
         }
-    }    
+    };    
 
     //lets set our ModelDef and helper objects from this closed scope
     ModelDef = modelDef;
