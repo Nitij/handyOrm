@@ -5,7 +5,7 @@ This object library is still in initial phase and I will be providing all the up
 
 Check out some ways in which this can be used:
 
-### Initialize the model and chain methods in any sequence:
+### Initialize the model and chain methods in any sequence: 
 
 ```
 var myModel = null;
