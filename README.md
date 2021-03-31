@@ -92,8 +92,3 @@ _fields_: Name of bound columns to be cleared in the form of [col1, col2, ...]:c
 ***
 
 You can refer to the sample application code on github [here](https://github.com/Nitij/handyOrmSampleApplication).
-
-### Support or Contact
-My website is still on the way so right now the only means to contact me is at nitij.jp@gmail.com and I'll definitely reply whenever I get free from feeding my dinosaurs.
-
-Also each and everyone of you is most welcome to provide any suggestion/bug finding for the code.
